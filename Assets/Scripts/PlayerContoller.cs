@@ -9,6 +9,7 @@ public class PlayerContoller : MonoBehaviour
     public float jumpforce;
     public CharacterController playerController;
     public float gravityScale;
+    public Camera playerCamera;
 
     private Vector3 moveDirection;
     private float yStore;
@@ -43,5 +44,10 @@ public class PlayerContoller : MonoBehaviour
 
         playerController.Move(moveDirection * Time.deltaTime);
 
+
+        transform.rotation = Quaternion.Euler(0f,playerCamera.transform.rotation.eulerAngles.y, 0f);
+
     }
+
+
 }
