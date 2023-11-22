@@ -10,6 +10,9 @@ public class PlayerContoller : MonoBehaviour
     public CharacterController playerController;
     public float gravityScale;
     public Camera playerCamera;
+    public GameObject playerModel;
+    public float rotateSpeed;
+
 
     private Vector3 moveDirection;
     private float yStore;
@@ -25,7 +28,8 @@ public class PlayerContoller : MonoBehaviour
     {
         yStore = moveDirection.y;
 
-        moveDirection = new Vector3(Input.GetAxisRaw("Horizontal"), 0f, Input.GetAxisRaw("Vertical"));
+
+        moveDirection = (transform.forward * Input.GetAxisRaw("Vertical")) + (transform.right * Input.GetAxisRaw("Horizontal"));
         moveDirection = moveDirection * movespeed;
 
         moveDirection.y = yStore;
@@ -44,8 +48,17 @@ public class PlayerContoller : MonoBehaviour
 
         playerController.Move(moveDirection * Time.deltaTime);
 
+        
 
-        transform.rotation = Quaternion.Euler(0f,playerCamera.transform.rotation.eulerAngles.y, 0f);
+
+        if (Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0)
+        {
+            transform.rotation = Quaternion.Euler(0f, playerCamera.transform.rotation.eulerAngles.y, 0f);
+            Quaternion newRotation = Quaternion.LookRotation(new Vector3(moveDirection.x, 0f, moveDirection.z));
+            playerModel.transform.rotation = Quaternion.Slerp(playerModel.transform.rotation, newRotation, rotateSpeed * Time.deltaTime);
+
+        }
+        
 
     }
 
