@@ -12,6 +12,7 @@ public class PlayerContoller : MonoBehaviour
     public Camera playerCamera;
     public GameObject playerModel;
     public float rotateSpeed;
+    public Animator animator;
 
 
     private Vector3 moveDirection;
@@ -30,19 +31,25 @@ public class PlayerContoller : MonoBehaviour
 
 
         moveDirection = (transform.forward * Input.GetAxisRaw("Vertical")) + (transform.right * Input.GetAxisRaw("Horizontal"));
+        moveDirection.Normalize();
         moveDirection = moveDirection * movespeed;
 
         moveDirection.y = yStore;
 
-        
+
 
 
 
         //salto
-        if (Input.GetButtonDown("Jump")) 
+
+        if (playerController.isGrounded)
         {
-            moveDirection.y = jumpforce;
+            if (Input.GetButtonDown("Jump"))
+            {
+                moveDirection.y = jumpforce;
+            }
         }
+        
 
         moveDirection.y += Physics.gravity.y * Time.deltaTime * gravityScale;
 
@@ -58,7 +65,15 @@ public class PlayerContoller : MonoBehaviour
             playerModel.transform.rotation = Quaternion.Slerp(playerModel.transform.rotation, newRotation, rotateSpeed * Time.deltaTime);
 
         }
-        
+        else 
+        {
+            playerCamera.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
+        }
+
+        animator.SetFloat("Speed", Mathf.Abs(moveDirection.x) + Mathf.Abs(moveDirection.z));
+
+
+        animator.SetBool("isGrounded", playerController.isGrounded);
 
     }
 
